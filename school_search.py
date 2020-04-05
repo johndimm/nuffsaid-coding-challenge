@@ -15,7 +15,7 @@ class School_search:
 
     def __init__(self):
         #
-        # The inverted index tells you which schools 
+        # The index tells you which schools 
         # have a given word in their name, city, or state.
         # The states are abbreviated in this data.
         #
@@ -26,7 +26,7 @@ class School_search:
             line = self.data[idx]
 
             def add(field):
-                for word in line[field].split(" "):
+                for word in self.tokenize(line[field]):
                     if not word in self.words:
                         self.words[word] = []
                     # The identifier for a school is its index in the self.data array.
@@ -35,13 +35,17 @@ class School_search:
             add(CITY)
             add(STATE)
 
+    def tokenize(self, buf):
+        return buf.split(' ')
+
     def candidate_schools(self, query):  
-         #
+        #
+        # Make a query-specific inverted index.
         # For every school that matches a term of the query
         # store the term and the number of times it appears.
         #
         candidates = dict()
-        query_terms = query.upper().split(' ')  # Source data happens to be UPPER CASE.
+        query_terms = self.tokenize(query.upper())  # Source data happens to be UPPER CASE.
         for term in query_terms:
             if term in self.words:
                 for idx in self.words[term]:
